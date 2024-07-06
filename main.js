@@ -1,7 +1,7 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 
 const createWindow = () => {
@@ -14,11 +14,19 @@ const createWindow = () => {
     },
   });
 
+  ipcMain.on("set-title", setTitleHandler);
+
   // 加载 index.html
   mainWindow.loadFile("index.html");
 
   // 打开开发工具
   // mainWindow.webContents.openDevTools()
+};
+
+const setTitleHandler = (event, title) => {
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  win.setTitle(title);
 };
 
 // 这段程序将会在 Electron 结束初始化
