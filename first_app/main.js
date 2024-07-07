@@ -13,11 +13,6 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  //主进程监听
-  ipcMain.on("set-title", setTitleHandler);
-
-  //主进程双向设置
-  ipcMain.handle("dialog:openFile", handleFileOpen);
 
   const menu = Menu.buildFromTemplate([
     {
@@ -61,6 +56,10 @@ const handleFileOpen = async () => {
 // 和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
+  //主进程监听
+  ipcMain.on("set-title", setTitleHandler);
+  //主进程双向设置
+  ipcMain.handle("dialog:openFile", handleFileOpen);
   //打印到node 控制台
   ipcMain.on("counter-value", (_event, value) => {
     console.log(value); // will print value to Node console

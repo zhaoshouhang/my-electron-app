@@ -1,0 +1,18 @@
+<script>
+  const { ipcRenderer } = require("electron");
+
+  // 我们请求主进程向我们发送一个通道
+  // 以便我们可以用它与 Worker 进程建立通信
+  ipcRenderer.send("request-worker-channel");
+
+  ipcRenderer.once("provide-worker-channel", (event) => {
+    // 一旦收到回复, 我们可以这样做...
+    const [port] = event.ports;
+    // ... 注册一个接收结果处理器 ...
+    port.onmessage = (event) => {
+      console.log("received result:", event.data);
+    };
+    // ... 并开始发送消息给 work!
+    port.postMessage(21);
+  });
+</script>
