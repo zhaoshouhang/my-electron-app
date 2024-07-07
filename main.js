@@ -1,7 +1,7 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const path = require("node:path");
 
 const createWindow = () => {
@@ -18,6 +18,24 @@ const createWindow = () => {
 
   //主进程双向设置
   ipcMain.handle("dialog:openFile", handleFileOpen);
+
+  const menu = Menu.buildFromTemplate([
+    {
+      label: app.name,
+      submenu: [
+        {
+          label: "增加",
+          click: () => mainWindow.webContents.send("update-counter", 1),
+        },
+        {
+          label: "减少",
+          click: () => mainWindow.webContents.send("update-counter", -1),
+        },
+      ],
+    },
+  ]);
+  //设置菜单
+  Menu.setApplicationMenu(menu);
 
   // 加载 index.html
   mainWindow.loadFile("index.html");
@@ -43,6 +61,11 @@ const handleFileOpen = async () => {
 // 和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
+  //打印到node 控制台
+  ipcMain.on("counter-value", (_event, value) => {
+    console.log(value); // will print value to Node console
+  });
+
   createWindow();
 
   app.on("activate", () => {

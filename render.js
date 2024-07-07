@@ -11,5 +11,12 @@ const filePathElement = document.getElementById("filePath");
 
 openButton.addEventListener("click", async () => {
   const filePath = await window.api.openFile();
-  filePathElement.innerText = filePath;
+  filePathElement.innerText = filePath || "";
+});
+
+window.api.onUpdateCounter((value) => {
+  const oldValue = Number(counter.innerText);
+  const newValue = oldValue + value;
+  counter.innerText = newValue.toString();
+  window.api.counterValue(newValue);
 });
