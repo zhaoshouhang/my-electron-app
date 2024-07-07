@@ -17,4 +17,5 @@ window.addEventListener("DOMContentLoaded", () => {
 
 contextBridge.exposeInMainWorld("api", {
   setTitle: (title) => ipcRenderer.send("set-title", title),
+  openFile: () => ipcRenderer.invoke("dialog:openFile"),
 });
